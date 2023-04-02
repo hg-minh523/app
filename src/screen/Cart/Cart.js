@@ -1,27 +1,29 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Icon from 'react-native-vector-icons/AntDesign';
+import { CartContext } from "../../Context/CartContext";
 import { formatMoney } from "../../utils";
 import Footer from "../Footer/Footer";
 import CartDetail from "./CartDetail";
+import FlyCheckOut from "../../Component/FlyCheckout";
+const Cart = ({ route }) => {
+    const { images } = route.params;
+    const { productList, handleOpen } = useContext(CartContext)
 
-const Cart = ({ route, navigation }) => {
-    const { data, images } = route.params;
-    const [dataSource, setDataSource] = useState([]);
+    const [dataSource, setDataSource] = useState(productList);
     const [total,setTotal] = useState(0);
+
+    // Function handler event change 
     useEffect(() => {
-        dataSource.push(data);
-    
-        setDataSource([...dataSource]);
-    }, [data])
-    const handleRemove = (i) => {
-        dataSource.pop(dataSource[i]);
-        setDataSource([...dataSource]);
-    }
-    useEffect(() => {
+        setDataSource(productList)
         const totalData = dataSource.reduce((preValue, currentValue) => preValue + currentValue.Product_Price * currentValue.Quantity,0);
         setTotal(totalData)
-    },[dataSource])
+    },[productList,dataSource])
+
+    const handleSlideCartFly = () => {
+        handleOpen(true)
+    }
+
     const setTotalCart = (value) => {
        const newData = dataSource.map(item => {
         if (item.id === value.id){
@@ -31,10 +33,12 @@ const Cart = ({ route, navigation }) => {
        })
        setDataSource(newData)
     }
+
     return (
         <View
             style={{
-                flex: 1
+                flex: 1,
+                position: "relative",
             }}
         >
             <View
@@ -42,6 +46,7 @@ const Cart = ({ route, navigation }) => {
                     flexDirection: 'row',
                     backgroundColor: 'white',
                     flex: 0.1,
+                    zIndex: 1,
                     paddingHorizontal: 16,
                     justifyContent: 'space-between',
                     alignItems: "center"
@@ -63,6 +68,7 @@ const Cart = ({ route, navigation }) => {
                 </View>
                 <View>
                     <TouchableOpacity
+                        onPress={handleSlideCartFly}
                         style={{
                             backgroundColor: '#36648B',
                             width: 160,
@@ -75,13 +81,14 @@ const Cart = ({ route, navigation }) => {
                         <Text
                             style={{
                                 fontSize: 20,
-                                color: 'white'
+                                color: 'white',
                             }}
                         >Checkout</Text>
                         <Icon name="arrowright" size={30} color="white"></Icon>
 
                     </TouchableOpacity>
                 </View>
+                    <FlyCheckOut ></FlyCheckOut>
             </View>
             {/* Center */}
             <View
@@ -95,7 +102,7 @@ const Cart = ({ route, navigation }) => {
                {!!dataSource && dataSource.length > 0 ? dataSource.map((item,index) =>
                 {
                     return (
-                        <CartDetail setTotalCart={setTotalCart} index={index} handleRemove={handleRemove} images={images} dataSource={item} key={index}/>
+                        <CartDetail setTotalCart={setTotalCart} index={index} images={images} dataSource={item} key={index}/>
                     )
                 } 
                ) : ''} 

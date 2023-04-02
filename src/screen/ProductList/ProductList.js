@@ -1,11 +1,10 @@
-import SearchComponent from "../../Component/Search";
-import Icon from 'react-native-vector-icons/AntDesign';
 
-import { View, Text, TouchableOpacity, Image, Dimensions, ScrollView } from "react-native";
-import Footer from "../Footer/Footer";
-import { productAPi } from "../../api/product.api";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import { Dimensions, ScrollView, View } from "react-native";
+import HeaderFlexiable from "../../Component/HeaderFlexible";
 import ProductCard from "../../Component/ProductCard";
+import { ProductContext } from "../../Context/ProductContext";
+import Footer from "../Footer/Footer";
 const { width, height } = Dimensions.get('window')
 
 const HomeScreen = () => {
@@ -14,14 +13,8 @@ const HomeScreen = () => {
     )
 }
 const ProductList = ({ navigation }) => {
-    const [dataSouce, setDataSource] = useState([]);
-    useEffect(() => {
-        const getProductList = async () => {
-            const dataS = await productAPi.search({})
-            return dataS
-        }
-        getProductList().then(result => setDataSource(result.results))
-    }, [])
+    const { product } = useContext(ProductContext)
+    const [dataSouce, setDataSource] = useState(product);
     return (
         <View
             style={{
@@ -32,7 +25,7 @@ const ProductList = ({ navigation }) => {
                 justifyContent: 'space-between'
             }}
         >
-            <SearchComponent color={"black"} />
+            <HeaderFlexiable backgroundColor='white' notify={false} color='black'/>
             <View
                 style={{
                     flex: 0.9,

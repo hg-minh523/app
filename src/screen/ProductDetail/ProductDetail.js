@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SceneMap, TabBar } from 'react-native-tab-view';
-import ProductDetailHeader from "./ProductDetailHeader";
+import { TabBar } from 'react-native-tab-view';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ProductDetailHeader from "./ProductDetailHeader";
 
 import { productAPi } from '../../api/product.api';
+import { CartContext } from '../../Context/CartContext';
 import { formatMoney } from '../../utils';
 const { height } = Dimensions.get("window")
 
@@ -49,16 +50,18 @@ const ProductDetail = ({ route, navigation }) => {
     const [index, setIndex] = React.useState(0);
     const [dataSouce, setDataSouce] = useState({})
     const [images, setImages] = useState({})
-
+    const { handleAddProduct } = useContext(CartContext);
 
     const [routes] = React.useState([
         { key: 'first', title: 'Detail Item' },
         { key: 'second', title: 'Reviews' },
     ]);
-    const renderScene = SceneMap({
-        first: FirstRoute,
-        second: SecondRoute,
-    });
+    // Handle navigation
+    const handleAddProductToCart = () => {
+        handleAddProduct(dataSouce);
+        navigation.navigate("Cart",{  images: images});
+    }
+    // Handle call API update data
     useEffect(() => {
         const getProductById = async () => {
             const dataS = await productAPi.getById(id);
@@ -70,6 +73,7 @@ const ProductDetail = ({ route, navigation }) => {
             setDataSouce(result)
         });
     }, [id])
+    console.log(dataSouce)
     return (
         <View style={{ flex: 1, backgroundColor: 'rgba(255,255,225)' }}>
             <View style={{ flex: 0.1 }}>
@@ -85,7 +89,7 @@ const ProductDetail = ({ route, navigation }) => {
             >
                 <Image
                     source={{
-                        uri: `http://192.168.22.127:4000/product/${images[index]}`,
+                        uri: `http://192.168.105.212:4000/product/${images[index]}`,
                     }}
                     style={{
                         marginHorizontal: 16,
@@ -141,7 +145,7 @@ const ProductDetail = ({ route, navigation }) => {
                                     >
                                         <Image
                                             source={{
-                                                uri: `http://192.168.22.127:4000/product/${item}`,
+                                                uri: `http://192.168.105.212:4000/product/${item}`,
                                             }}
                                             style={{
                                                 width: 50,
@@ -352,10 +356,7 @@ const ProductDetail = ({ route, navigation }) => {
                     }}
                 >
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("Cart", {
-                            data: dataSouce,
-                            images: images
-                        })}
+                        onPress={handleAddProductToCart}
                         style={{
                             borderRadius: 10,
                             backgroundColor: '#36648B',

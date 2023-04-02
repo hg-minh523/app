@@ -38,7 +38,7 @@ const ProductCard = (props) => {
             >
                 <Image
                     source={{
-                        uri: `http://192.168.22.127:4000/product/${imgArray[0]}`,
+                        uri: `http://192.168.105.212:4000/product/${imgArray[0]}`,
                     }}
                     style={{
                         width: '100%',

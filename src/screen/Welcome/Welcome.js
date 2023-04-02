@@ -3,12 +3,12 @@ import { Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity, View }
 const { height } = Dimensions.get("window")
 const Welcome = ({navigation}) => (
   <>
-    <View >
+    <View style={{backgroundColor: 'white'}}>
       <ImageBackground
         style={{
           height: height / 2,
         }}
-        source={require("../../assets/123.jpg")} resizeMode="cover" >
+        source={require("../../assets/background.jpg")} resizeMode="cover" >
       </ImageBackground>
     </View>
     <View
@@ -27,11 +27,11 @@ const Welcome = ({navigation}) => (
           fontFamily: 'poppins-bold'
         }}
       >
-        Discover you dream Job
+        Demo Mobile Application
       </Text>
       <Text
         style={{
-          paddingTop: 8,
+          paddingTop: 16,
           fontSize: 32,
           textAlign: 'center',
           color: "#1C1C1C",

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-// import {use}
 import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import InputApp from '../../Component/Input';
-// import { authApi } from '../../api/auth.api';
+import { userAPI } from '../../api/user.api';
 const Login = ({ navigation }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleChangeUsername = (value) => {
-       setUsername(value);
+        setUsername(value);
     }
     const handleChangePassword = (value) => {
         setPassword(value);
@@ -19,24 +19,34 @@ const Login = ({ navigation }) => {
             User_Account_Name: username,
             User_Account_Password: password,
         }
-       const user = await fetch('http://192.168.22.127:4000/api/v1/user/login', {
+
+        const user = await fetch('http://192.168.105.212:4000/api/v1/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         }).then(response => response.json())
-        .then(json => {
-            return json;
-        })
-        .catch(error => {
-          console.error(error);
-        });
-       if (user["msg"] !== "Fail to login"){
-        navigation.navigate("HomePage");
-       }else {
+            .then(json => {
+                return json;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        try {
+            await AsyncStorage.clear();
+            await AsyncStorage.setItem('token', user.accessToken.token);
+            const userInfor = await userAPI.getUserInfor()
+            await AsyncStorage.setItem('userInfor',`${userInfor.id}`);
+
+        } catch (error) {
+            
+        }
+        if (user.msg !== "Fail to  login") {
+            navigation.navigate("HomePage");
+        } else {
             Alert.alert("Wrong password")
-       }
+        }
     }
     return (
         <SafeAreaView>
@@ -66,13 +76,13 @@ const Login = ({ navigation }) => {
                         placeholder="Username"
                         value={username}
                         onChangeText={handleChangeUsername}
-                        
+
                     ></InputApp>
                     <InputApp
                         placeholder="Password"
                         value={password}
                         secureTextEntry={true}
-                        onChangeText={handleChangePassword}                     
+                        onChangeText={handleChangePassword}
                     />
                     <Text
                         style={{
@@ -90,7 +100,7 @@ const Login = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity
-                            onPress={handleLogin}
+                        onPress={handleLogin}
                         style={{
                             paddingVertical: 20,
                             backgroundColor: "#36648B",
@@ -110,7 +120,7 @@ const Login = ({ navigation }) => {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-         onPress={() => navigation.navigate('Register')}
+                        onPress={() => navigation.navigate('Register')}
 
                         style={{
                             paddingVertical: 20,

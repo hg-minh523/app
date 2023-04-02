@@ -1,6 +1,6 @@
 import axios from 'axios';
 const instance = axios.create({
-    baseURL: 'http://192.168.22.127:4000/api/v1',
+    baseURL: 'http://192.168.105.212:4000/api/v1',
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -9,7 +9,7 @@ const instance = axios.create({
 export const authApi = {
     register: (data) => {
         // instance.post("http://localhost:4000/api/v1/user/register",data)
-        fetch('http://192.168.22.127:4000/api/v1/user/register', {
+        fetch('http://192.168.105.212:4000/api/v1/user/register', {
             method: 'POST',
             headers: {
                 // Accept: 'application/json',

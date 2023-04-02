@@ -1,10 +1,10 @@
-import React from 'react';
-import { SafeAreaView } from 'react-navigation';
-import Admin from './src/screen/index'
-const App = () => (
-  <Admin />
-
-  );
+import Admin from './src/screen/index';
+const App = () => {
+  
+  return (
+      <Admin />
+  )
+}
 
 
 

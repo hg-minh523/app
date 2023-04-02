@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // import {use}
 import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
-import { authApi } from '../../api/auth.api';
 import InputApp from '../../Component/Input';
+import { userAPI } from '../../api/user.api';
 const Register = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,12 +28,8 @@ const Register = ({ navigation }) => {
                 User_Account_Permission: 'admin',
                 Status: 'New'
             }
-            Promise.all([authApi.register(data)]).then(result => {
-            }).catch(e => console.log(e))
-         
-            // if (user.data){
-            //     navigation.navigate("Login");
-            // }
+            const user = await userAPI.register(data);
+            if(!!user) navigation.navigate("Login")
         }
     }
     return (

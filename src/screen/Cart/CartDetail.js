@@ -1,25 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Image, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import Quantity from '../../Component/Quantity';
+import { CartContext } from '../../Context/CartContext';
 import { formatMoney } from '../../utils';
 const { height, width } = Dimensions.get("window")
 
 const CartDetail = (props) => {
     const [quantity, setQuantity] = useState(1);
-    const {dataSource, images, handleRemove,index } = props
+    const {dataSource,index } = props;
+    const [ images, setImages] = useState([]);
+    const { handleRemoveProduct } = useContext(CartContext);
     const handleRemoveMain = () => {
-        handleRemove(index);
+        handleRemoveProduct(index)
     }
     useEffect(() => {
         dataSource.Quantity = quantity;
         props.setTotalCart(dataSource);
     },[quantity])
+
+    useEffect(() => {
+        const images = dataSource.Product_Images.split(",");
+        setImages(images)
+    },[dataSource])
+
     const handleSetQuantity  = (value) => {
         if (value > 0){
             setQuantity(value)
         }
     }
-
+    
     return (
        
         <View
@@ -45,7 +54,7 @@ const CartDetail = (props) => {
                     height: 75
                 }}
                 source={{
-                    uri: `http://192.168.22.127:4000/product/${images[0]}`,
+                    uri: `http://192.168.105.212:4000/product/${images[0]}`,
                 }}
 
             ></Image>
@@ -66,12 +75,12 @@ const CartDetail = (props) => {
                         color: 'black'
                     }}
                 >{dataSource.Product_Name}</Text>
-                <Text
+                {/* <Text
                     style={{
                         fontSize: 14,
                         color: 'gray'
                     }}
-                >{dataSource.Product_Group.Product_Group_Name}</Text>
+                >{dataSource?.Product_Group.Product_Group_Name}</Text> */}
                <Quantity handleSetQuantity={handleSetQuantity} quantity={quantity}/>
                 <Text
                     style={{
